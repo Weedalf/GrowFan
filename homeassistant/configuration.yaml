@@ -1,0 +1,107 @@
+
+#create a fan entity because HA sees the fan as a light
+#change light.growfan to the entity name you use in homeassistant
+
+fan:
+ - platform: template
+   fans:
+      grow_fan:
+        friendly_name: "Grow Fan"
+        value_template: "{{ states('light.growfan') }}"
+        speed_count: 100
+        percentage_template: "{{ (state_attr('light.growfan','brightness') | int /255*100) | int}}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.growfan
+        turn_off:
+          service: light.turn_off
+          entity_id: light.growfan
+        set_percentage:
+          service: light.turn_on
+          entity_id: light.growfan
+          data_template:
+            brightness_pct: "{{ percentage }}"
+        preset_modes:
+          - "off"
+          - "very_low"
+          - "low"
+          - "medium"
+          - "high"
+          - "max"
+        preset_mode_template: >
+          {% if is_state('light.growfan', 'on') %}
+            {% if state_attr('light.growfan', 'percentage') == 100  %}
+              max
+            {% elif state_attr('light.growfan', 'percentage') == 80 %}
+              high
+            {% elif state_attr('light.growfan', 'percentage') == 66 %}
+              medium
+            {% elif state_attr('light.growfan', 'percentage') == 50 %} 
+              low
+            {% else %} 
+              very_low
+           {% endif %}
+          {% else %}
+            off
+          {% endif %}
+        set_preset_mode:
+          - service: light.turn_on
+            target:
+              entity_id: light.growfan
+            data:
+              brightness: >-
+                {% if preset_mode == 'max' %}
+                  255
+                {% elif preset_mode == 'high' %}
+                  204
+                {% elif preset_mode == 'medium' %}
+                  168
+                {% elif preset_mode == 'low' %}
+                  127
+                {% elif preset_mode == 'very_low' %}
+                  97
+                {% else %}
+                  0
+                {% endif %}
+
+#config fields your Homeassistant
+mqtt:
+  number:
+  - name: "Minimale Temperatur"
+    command_topic: "homeassistant/sensor/growfan/set/TMIN"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.TMIN }}"
+  - name: "Maximale Temperatur"
+    command_topic: "homeassistant/sensor/growfan/set/TMAX"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.TMAX }}"
+  - name: "Minimale Feuchtigkeit"
+    command_topic: "homeassistant/sensor/growfan/set/HMIN"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.HMIN }}"
+  - name: "Maximale Feuchtigkeit"
+    command_topic: "homeassistant/sensor/growfan/set/HMAX"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.HMAX }}"
+  - name: "Minimale Drehzahl"
+    command_topic: "homeassistant/sensor/growfan/set/VMIN"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.VMIN }}"
+  - name: "Maximale Drehzahl"
+    command_topic: "homeassistant/sensor/growfan/set/VMAX"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.VMAX }}"
+  - name: "Änderungsintervall (min)"
+    command_topic: "homeassistant/sensor/growfan/set/cTime"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.cTime }}"
+
+  switch:
+  - name: "Growfan Auto Control"
+    command_topic: "homeassistant/sensor/growfan/set/autoControl"
+    state_topic: "homeassistant/sensor/growfan/config"
+    value_template: "{{ value_json.autoControl }}"
+    qos: 1
+    payload_on: true
+    payload_off: false
+    retain: true 
