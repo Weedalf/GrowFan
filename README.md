@@ -11,3 +11,40 @@ example for Home Assistant:
 
 <img width="482" alt="Bildschirmfoto 2024-11-05 um 11 56 34" src="https://github.com/user-attachments/assets/dc5285e8-6ef4-42d5-af67-b5b2433b3583">
 
+# Tasmota on ESP32 with SHT3X and Fan Control
+
+## 1. Flash Tasmota to your ESP32  
+
+Follow the standard procedure to flash Tasmota onto your ESP32.
+
+## 2. Connect the SHT3X Sensor  
+
+Wire the SHT3X sensor to the ESP32 as follows:  
+
+| SHT3X Pin | ESP32 Pin |
+|-----------|----------|
+| SDA       | GPIO (e.g., 21) |
+| SCL       | GPIO (e.g., 22) |
+| VCC       | 3.3V or 5V |
+| GND       | GND |
+
+## 3. Fan Wiring  
+
+### Power  
+- Use a **buck converter (5V)** to supply power to the fan.  
+- If you **don’t** use a buck converter, **at least connect the fan GND to the ESP32**.  
+
+### PWM Control  
+- Identify the **third wire** (responsible for fan speed control).  
+- Connect it to the ESP32 (e.g., **GPIO 14**).  
+
+## 4. Tasmota Configuration  
+
+1. Open **Configuration** in Tasmota.  
+2. Set the correct **pin numbers** for SDA, SCL, and PWM.  
+3. In the dropdown menu, select:  
+   - **SDA** (e.g., GPIO 21)  
+   - **SCL** (e.g., GPIO 22)  
+   - **PWM** (e.g., GPIO 14)  
+
+Now your ESP32 is configured with Tasmota, SHT3X, and fan control! 🚀  
