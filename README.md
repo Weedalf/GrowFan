@@ -47,4 +47,12 @@ Wire the SHT3X sensor to the ESP32 as follows:
    - **SCL** (e.g., GPIO 22)  
    - **PWM** (e.g., GPIO 14)  
 
-Now your ESP32 is configured with Tasmota, SHT3X, and fan control! 🚀  
+## 5. Autostart Configuration  
+
+To ensure automatic execution on startup, create a file named **`autoexec.be`** in the **filesystem**, with the following content:  
+
+
+`load('Growfan.be')`
+
+## ⚠️ Important Note  
+Check the **pinout of your ESP32** to ensure that the chosen pins for **SDA, SCL, and PWM** are suitable!
