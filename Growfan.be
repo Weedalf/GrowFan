@@ -154,7 +154,7 @@ class GrowFan_UI
     var current_hum = self.get_humidity()
     var temp_range = persist.HMAX - persist.HMIN
     var temp_slope = (persist.VMAX - persist.VMIN) / temp_range
-    var temp_fan_speed = temp_slope * (current_hum - persist.HMIN) + persist.HMIN
+    var temp_fan_speed = temp_slope * (current_hum - persist.HMIN) + persist.VMIN
 
     if temp_fan_speed <= persist.VMIN
       temp_fan_speed = persist.VMIN
